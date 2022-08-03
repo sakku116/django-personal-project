@@ -30,31 +30,42 @@ def getAllBooks(request, id=None):
 
 @csrf_exempt
 def createBook(request):
+    message = None
+    success = False
+    status = 200
+
     if request.method == 'POST':
         # request.POST.get only retrieve data from form encoded
         try:
             body_request = json.loads(request.body.decode('utf-8'))
             title = body_request['title']
             description = body_request['description']
-            print('data from json')
+            print(f'data from json = {title, description}')
         except:
             title = request.POST.get('title')
             description = request.POST.get('description')
-            print('data from form encoded')
+            print(f'data from form encoded = {title, description}')
 
         # try to create new object
         try:
             new_book = Book(title = title, description = description)
             new_book.save()
-            message = 'success'
+
+            success = True
+            status = 200
         except:
-            message = 'failed'
+            success = False
+            status = 400
+            message = "'title' and 'description' are required!"
 
     else:
+        success = False
+        status = 400
         message = 'method is not supported. Use POST method instead!'
 
     return JsonResponse(
         {
-            'message': message
-        }
+            'success': success,
+            'message': message,
+        }, status = status
     )
