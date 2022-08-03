@@ -25,12 +25,13 @@ SECRET_KEY = 'django-insecure-+n=_(x-v$_p1p2$awvmlt*fnveeg7k02oey@r28no4t5-*@j1o
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'bookshelf_api_app',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
