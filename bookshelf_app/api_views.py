@@ -14,11 +14,11 @@ def crudBook(request, id=None):
     message = None
     success = True
 
-    if request.method == "GET": # id (optional)
+    if request.method == "GET": # path:id (optional)
         if id:
             try:
-                books_querySet = Book.objects.get(pk = id) # just one item
-                result = books_querySet.as_dict() # as_dict() is user defined method in model class to serialize object
+                book_querySet = Book.objects.get(pk = id) # just one item
+                result = book_querySet.as_dict() # as_dict() is user defined method in model class to serialize object
             except:
                 result = None
         else:
@@ -37,11 +37,13 @@ def crudBook(request, id=None):
     elif request.method == 'POST': # body request (required)
         try:
             # request.POST.get only retrieve data from form encoded
+            # so, if want to retrieve data from json, it should be taken from request.body
             body_request = json.loads(request.body.decode('utf-8'))
 
             title = body_request['title']
             description = body_request['description']
         except:
+            # data from html from or form encoded
             title = request.POST.get('title')
             description = request.POST.get('description')
 
@@ -65,13 +67,13 @@ def crudBook(request, id=None):
             }, status = status
         )
 
-    elif request.method == "DELETE": # id (required)
+    elif request.method == "DELETE": # path:id (required)
         try:
-            query = Book.objects.get(id = id)
-            item_obj = query.as_dict()
+            book_querySet = Book.objects.get(id = id)
+            item_obj = book_querySet.as_dict()
 
             # delete book
-            query.delete()
+            book_querySet.delete()
 
             status = 200
             message = f'book deleted successfully'
@@ -87,3 +89,40 @@ def crudBook(request, id=None):
                 'message' : message
             }, status = status
         )
+
+    elif request.method == "PUT": # path:id & body request (required)
+        try:
+            body_request = json.loads(request.body.decode('utf-8'))
+
+            title = body_request['title']
+            description = body_request['description']
+        except:
+            title = None
+            description = None
+
+        try:
+            book_querySet = Book.objects.get(id = id)
+            
+            if title:
+                book_querySet.title = title
+            if description:
+                book_querySet.description = description
+
+            book_querySet.save()
+
+            status = 200
+            message = 'book updated succesfully'
+            success = True
+        except:
+            status = 400
+            message = 'error'
+            success = False
+            
+        return JsonResponse(
+            {
+                'success': success,
+                'message': message,
+            }, status = status
+        )
+            
+
