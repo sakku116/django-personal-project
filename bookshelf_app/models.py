@@ -14,8 +14,8 @@ class Book(models.Model):
     def as_dict(self):
         ''' return data with dictionary format (serialize each object returned not all of the objects returned) '''
 
-        return dict(
-            id = self.id,
-            title = self.title,
-            description = self.description
-        )
+        return {
+            "id": self.id,
+            "title": self.title,
+            "description": self.description
+        } 
