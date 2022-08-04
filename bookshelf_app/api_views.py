@@ -53,6 +53,7 @@ def createBook(request):
 
             success = True
             status = 200
+            message = f"success creating a '{title}' book (description = '{description}')"
         except:
             success = False
             status = 400
@@ -67,5 +68,38 @@ def createBook(request):
         {
             'success': success,
             'message': message,
+        }, status = status
+    )
+
+@csrf_exempt
+def deleteBook(request, id):
+    success = False
+    message = None
+    status = 200
+
+    if request.method == "DELETE":
+        try:
+            query = Book.objects.get(id = id)
+            item_obj = query.as_dict()
+
+            # delete book
+            query.delete()
+
+            status = 200
+            message = f'book deleted successfully'
+            success = True        
+        except:
+            status = 400
+            message = "failed to delete the book"
+            success = False
+    else:
+        status = 400
+        message = "request method is not supported. use DELETE method instead!"
+        succces = False
+
+    return JsonResponse(
+        {
+            'success' : success,
+            'message' : message
         }, status = status
     )
