@@ -20,4 +20,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('root_app.urls')),
     path('bookshelf/', include('bookshelf_app.urls')),
+    path('todo/', include('todo_app.urls')),
 ]
