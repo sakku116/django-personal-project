@@ -6,6 +6,7 @@ import json
 from .models import Todo as todoModels
 
 # Create your views here.
+@csrf_exempt
 def crudTodo(request, id=None):
     # default response
     status = 200
